@@ -23,20 +23,27 @@ public class UserService {
     }
 
     public List<User> getAllUsers(){
-        return users;
+        return userRepository.findAll();
     }
 
     public void addUser(User user){
-        users.add(user);
+        userRepository.save(user);
     }
 
-    public String deleteUser(Long userId){
-        if(users.stream().anyMatch(user -> user.getId().equals(userId))) {
-            users.removeIf(user -> user.getId().equals(userId));
-            return "User deleted";
+    public Boolean deleteUser(long userId){
+        if(userRepository.existsById(userId)){
+            userRepository.deleteById(userId);
+            return true;
         }
-        return "User not found";
+        return false;
     }
 
 
+    public boolean updateUserName(long userId, String name) {
+        if(userRepository.existsById(userId)) {
+            userRepository.findById(userId).get().setName(name);
+            return true;
+        }
+        return false;
+    }
 }
